@@ -20,7 +20,7 @@
 	organ.owner_custom_pain("The pain in your [organ.name] is living hell!", 1)
 
 /datum/surgery_step/insert_item/end_step(mob/living/user, obj/item/organ/external/organ, obj/item/tool)
-	if(istype(tool, /obj/item/organ/external))
+	if(istype(tool, /obj/item/organ/external) || (istype(tool, /obj/item/device/mmi) && BP_IS_ROBOTIC(organ)))
 		user.visible_message(
 			SPAN_NOTICE("[user] connects [tool] to [organ.get_surgery_name()]."),
 			SPAN_NOTICE("You connect [tool] to [organ.get_surgery_name()].")
@@ -176,6 +176,18 @@
 	else if(istype(I, /obj/item/organ/internal))
 		var/obj/item/organ/organ = I
 		organ.replaced(src)
+
+	// Special case for MMI-s
+	else if(istype(I, /obj/item/device/mmi))
+		var/obj/item/device/mmi/M = I
+		var/obj/item/organ/internal/mmi_holder/holder = new(owner, 1)
+		holder.replaced(src)
+		I.loc = holder
+		holder.stored_mmi = I
+		holder.update_from_mmi()
+
+		if(M.brainmob && M.brainmob.mind)
+			M.brainmob.mind.transfer_to(owner)
 
 	// Limbs
 	else if(istype(I, /obj/item/organ/external))

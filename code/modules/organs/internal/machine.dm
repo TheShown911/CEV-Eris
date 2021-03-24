@@ -106,9 +106,11 @@
 // Used for an MMI or posibrain being installed into a human.
 /obj/item/organ/internal/mmi_holder
 	name = "brain"
-	organ_tag = BP_BRAIN
+	unique_tag = BP_BRAIN
 	parent_organ_base = BP_CHEST
 	vital = 1
+	organ_efficiency = list(BP_BRAIN = 100)
+	nature = MODIFICATION_SILICON
 	var/obj/item/device/mmi/stored_mmi
 
 /obj/item/organ/internal/mmi_holder/proc/update_from_mmi()
