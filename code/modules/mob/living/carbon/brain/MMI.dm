@@ -28,6 +28,7 @@
 
 	//Revised. Brainmob is now contained directly within object of transfer. MMI in this case.
 
+	var/holder_type = /obj/item/organ/internal/mmi_holder
 	var/locked = 0
 	var/mob/living/carbon/brain/brainmob = null//The current occupant.
 	var/obj/item/organ/internal/brain/brainobj = null	//The current brain organ.

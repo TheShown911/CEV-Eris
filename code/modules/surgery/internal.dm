@@ -144,8 +144,16 @@
 
 		return TRUE
 
-// Cavity implants
+	// Special case for MMI-s
+	else if(istype(I, /obj/item/device/mmi))
+		if(!(BP_IS_ROBOTIC(src)))
+			to_chat(user, SPAN_WARNING("[I] can only be inserted in a robotic limb!"))
+			return FALSE
+		if(!(organ_tag in list(BP_HEAD, BP_CHEST)))
+			to_chat(user, SPAN_WARNING("[I] can only be inserted in the chest or the head!"))
+			return FALSE
 
+	// Cavity implants
 	if(total_volume + I.w_class > max_volume)
 		to_chat(user, SPAN_WARNING("There isn't enough space in [get_surgery_name()]!"))
 		return FALSE
@@ -180,8 +188,8 @@
 	// Special case for MMI-s
 	else if(istype(I, /obj/item/device/mmi))
 		var/obj/item/device/mmi/M = I
-		var/obj/item/organ/internal/mmi_holder/holder = new(owner, 1)
-		holder.replaced(src)
+		var/obj/item/organ/internal/mmi_holder/holder = new M.holder_type(src)
+		message_admins(M.holder_type)
 		I.loc = holder
 		holder.stored_mmi = I
 		holder.update_from_mmi()

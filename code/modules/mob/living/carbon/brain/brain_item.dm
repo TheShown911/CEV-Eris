@@ -84,6 +84,17 @@
 		else
 			owner.key = brainmob.key
 
+/obj/item/organ/internal/brain/robotize()
+	..()
+	replace_self_with(/obj/item/organ/internal/mmi_holder/posibrain)
+
+/obj/item/organ/internal/brain/proc/replace_self_with(replace_path)
+	var/obj/item/organ/external/tmp_parent = parent
+	qdel(src)
+	if(tmp_parent)
+		new replace_path(tmp_parent)
+		tmp_parent = null
+
 /obj/item/organ/internal/brain/slime
 	name = "slime core"
 	desc = "A complex, organic knot of jelly and crystalline particles."

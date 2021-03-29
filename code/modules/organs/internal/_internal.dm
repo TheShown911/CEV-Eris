@@ -114,6 +114,10 @@
 		amount *= 1 + owner.chem_effects[CE_BLOODCLOT]
 	damage = between(0, damage - round(amount, 0.1), max_damage)
 
+/obj/item/organ/internal/proc/robotize()
+	nature = MODIFICATION_SILICON
+	max_blood_storage = 0
+
 // Is body part open for most surgerical operations?
 /obj/item/organ/internal/is_open()
 	var/obj/item/organ/external/limb = get_limb()
