@@ -111,7 +111,7 @@
 	vital = 1
 	var/brain_type = /obj/item/device/mmi
 	var/obj/item/device/mmi/stored_mmi
-	nature = MODIFICATION_ASSISTED
+	nature = MODIFICATION_SILICON
 
 /obj/item/organ/internal/mmi_holder/Destroy()
 	if(stored_mmi && (stored_mmi.loc == src))
@@ -163,7 +163,9 @@
 	var/mob/living/holder_mob = loc
 	if(istype(holder_mob))
 		holder_mob.drop_from_inventory(src)
-	qdel(src)
+
+	if(!(QDELETED(src)))
+		qdel(src)
 
 /obj/item/organ/internal/mmi_holder/emp_act(severity)
 	..()
@@ -172,7 +174,6 @@
 /obj/item/organ/internal/mmi_holder/posibrain
 	name = "positronic brain interface"
 	brain_type = /obj/item/device/mmi/digital/posibrain
-	nature =  MODIFICATION_SILICON
 
 /obj/item/organ/internal/mmi_holder/posibrain/update_from_mmi()
 	..()

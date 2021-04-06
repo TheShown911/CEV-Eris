@@ -43,6 +43,7 @@ var/global/list/modifications_types = list(
 	var/hascolor = FALSE
 	var/allow_nt = TRUE
 	var/list/department_specific = ALL_DEPARTMENTS
+	var/nature_locked = FALSE				 //Nature locked organs can only be used if the parent is the exact same nature as them
 
 /datum/body_modification/proc/get_mob_icon(organ, color="#ffffff", gender = MALE, species)	//Use in setup character only
 	return new/icon('icons/mob/human.dmi', "blank")
@@ -62,6 +63,10 @@ var/global/list/modifications_types = list(
 		if(parent.nature > nature)
 			to_chat(usr, "[name] can't be attached to [parent.name]")
 			return FALSE
+		if(nature_locked)
+			if(!(parent.nature == nature))
+				to_chat(usr, "[name] can't be attached to [parent.name]")
+				return FALSE
 
 	if(department_specific.len)
 		if(H && H.mind)
@@ -219,16 +224,40 @@ var/global/list/modifications_types = list(
 
 /datum/body_modification/organ/robotize_organ
 	name = "Robotic organ"
-	short_name = "P: prosthesis"
+	short_name = "prosthesis"
 	id = "robotize_organ"
 	desc = "Robotic organ."
-	body_parts = list(OP_HEART, OP_LUNGS, OP_KIDNEY_LEFT, OP_KIDNEY_RIGHT, OP_STOMACH, BP_BRAIN, OP_LIVER, OP_EYES)
+	body_parts = list(OP_HEART, OP_LUNGS, OP_KIDNEY_LEFT, OP_KIDNEY_RIGHT, OP_STOMACH, OP_LIVER, OP_EYES)
 	nature = MODIFICATION_SILICON
 	allow_nt = FALSE
 
 /datum/body_modification/organ/robotize_organ/create_organ(var/mob/living/carbon/holder, O, color)
 	var/obj/item/organ/internal/I = ..(holder,O,color)
 	I.robotize()
+	return I
+
+////Brain////
+/datum/body_modification/organ/robotize_organ/positronic
+	name = "Positronic brain"
+	short_name = "Positronic brain"
+	id = "posi"
+	desc = "Brain replaced with a positronic brain."
+	body_parts = list(BP_BRAIN)
+	nature_locked = TRUE
+
+/datum/body_modification/organ/mmi
+	name = "Man-Machine Interface"
+	short_name = "MMI"
+	id = "mmi"
+	desc = "Brain replaced with a Man-Machine Interface."
+	body_parts = list(BP_BRAIN)
+	nature = MODIFICATION_SILICON
+	allow_nt = FALSE
+	nature_locked = TRUE
+
+/datum/body_modification/organ/mmi/create_organ(var/mob/living/carbon/holder, O, color)
+	var/obj/item/organ/internal/I = ..(holder,O,color)
+	I.mmize()
 	return I
 
 ////Eyes////

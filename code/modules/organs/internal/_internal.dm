@@ -118,6 +118,9 @@
 	nature = MODIFICATION_SILICON
 	max_blood_storage = 0
 
+/obj/item/organ/internal/proc/mmize()
+	return
+
 // Is body part open for most surgerical operations?
 /obj/item/organ/internal/is_open()
 	var/obj/item/organ/external/limb = get_limb()

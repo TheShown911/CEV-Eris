@@ -88,6 +88,10 @@
 	..()
 	replace_self_with(/obj/item/organ/internal/mmi_holder/posibrain)
 
+/obj/item/organ/internal/brain/mmize()
+	..()
+	replace_self_with(/obj/item/organ/internal/mmi_holder)
+
 /obj/item/organ/internal/brain/proc/replace_self_with(replace_path)
 	var/obj/item/organ/external/tmp_parent = parent
 	qdel(src)
