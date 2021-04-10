@@ -141,10 +141,10 @@
 
 	name = stored_mmi.name
 	desc = stored_mmi.desc
-	icon = stored_mmi.icon
+	SetIcon(stored_mmi.icon)
 
-	stored_mmi.icon_state = "mmi_full"
-	icon_state = stored_mmi.icon_state
+	stored_mmi.SetIconState("mmi_full")
+	SetIconState(stored_mmi.icon_state)
 
 	stored_mmi.brainmob.languages = owner.languages
 
@@ -177,7 +177,7 @@
 
 /obj/item/organ/internal/mmi_holder/posibrain/update_from_mmi()
 	..()
-	stored_mmi.icon_state = "posibrain-occupied"
-	icon_state = stored_mmi.icon_state
+	stored_mmi.SetIconState("posibrain-occupied")
+	SetIconState(stored_mmi.icon_state)
 
 	stored_mmi.brainmob.languages = owner.languages
