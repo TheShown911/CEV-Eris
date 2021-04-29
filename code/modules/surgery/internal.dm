@@ -189,7 +189,6 @@
 	else if(istype(I, /obj/item/device/mmi))
 		var/obj/item/device/mmi/M = I
 		var/obj/item/organ/internal/mmi_holder/holder = new M.holder_type(src)
-		message_admins(M.holder_type)
 		I.loc = holder
 		holder.stored_mmi = I
 		holder.update_from_mmi()

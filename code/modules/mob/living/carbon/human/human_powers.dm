@@ -221,3 +221,43 @@
 		to_chat(M, "\green You hear a strange, alien voice in your head... \italic [msg]")
 		to_chat(src, "\green You said: \"[msg]\" to [M]")
 	return
+
+/mob/living/carbon/human/proc/self_diagnostics()
+	set name = "Self-Diagnostics"
+	set desc = "Run an internal self-diagnostic to check for damage."
+	set category = "IC"
+
+	if(stat == DEAD) return
+
+	to_chat(src, SPAN_NOTICE("Performing self-diagnostic, please wait..."))
+
+	spawn(50)
+		var/output = SPAN_NOTICE("Self-Diagnostic Results:\n")
+
+		output += "Internal Temperature: [convert_k2c(bodytemperature)] Degrees Celsius\n"
+
+		if(isSynthetic())
+			output += "Current Battery Charge: [nutrition]\n"
+
+		if(isSynthetic())
+			var/toxDam = getToxLoss()
+			if(toxDam)
+				output += "System Instability:" + SPAN_NOTICE("[toxDam > 25 ? "Severe" : "Moderate"].") + "Seek charging station for cleanup.\n"
+			else
+				output += "System Instability: <span style='color:green;'>OK</span>\n"
+
+		for(var/obj/item/organ/external/EO in organs)
+			if(EO.nature >= MODIFICATION_ASSISTED)
+				if(EO.brute_dam || EO.burn_dam)
+					output += "[EO.name] -" + SPAN_NOTICE("[EO.burn_dam + EO.brute_dam > 30 ? "Heavy Damage" : "Light Damage"]") + "\n"
+				else
+					output += "[EO.name] - <span style='color:green;'>OK</span>\n"
+
+		for(var/obj/item/organ/IO in internal_organs)
+			if(IO.nature >= MODIFICATION_ASSISTED)
+				if(IO.damage)
+					output += "[IO.name] - " + SPAN_NOTICE("[IO.damage > 10 ? "Heavy Damage" : "Light Damage"]") + "\n"
+				else
+					output += "[IO.name] - <span style='color:green;'>OK</span>\n"
+
+		to_chat(src,output)

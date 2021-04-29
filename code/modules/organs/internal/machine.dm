@@ -148,10 +148,6 @@
 
 	stored_mmi.brainmob.languages = owner.languages
 
-	if(owner && owner.stat == DEAD)
-		owner.set_stat(CONSCIOUS)
-		owner.visible_message("<span class='danger'>\The [owner] twitches visibly!</span>")
-
 /obj/item/organ/internal/mmi_holder/removed(var/mob/living/user)
 
 	if(stored_mmi)

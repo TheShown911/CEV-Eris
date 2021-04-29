@@ -18,6 +18,7 @@
 	if(should_have_process(OP_STOMACH))
 		stomach_process()
 	carrion_process()
+	heatsink_process()
 
 /mob/living/carbon/human/proc/get_organ_efficiency(process_define)
 	var/list/process_list = internal_organs_by_efficiency[process_define]
@@ -249,6 +250,59 @@
 		else
 			to_chat(src, SPAN_WARNING("Your hunger is restless!"))
 		carrion_last_hunger = world.time
+
+/mob/living/carbon/human/proc/heatsink_process()
+	bodytemperature += round(robobody_count * 0.75, 0.1)
+
+	var/thermostat = species.body_temperature
+	var/turf/T = get_turf(src)
+	var/datum/gas_mixture/environment = T.return_air()
+	var/heatsink_efficiency = get_organ_efficiency(OP_HEATSINK)
+	var/efficiency_modified = max(0,(1 - get_pressure_weakness(environment.return_pressure())) * (heatsink_efficiency / 100))
+	var/temp_adj = 0
+	var/env_temp = get_environment_temperature()
+	var/thermal_protection = get_heat_protection(env_temp)
+
+	if(thermal_protection < 1)
+		temp_adj = min(bodytemperature - max(thermostat, env_temp), robobody_count * 2)
+	else
+		temp_adj = min(bodytemperature - thermostat, robobody_count * 2)
+
+	if(temp_adj < 0)
+		return
+
+	bodytemperature -= temp_adj * efficiency_modified
+
+	if(bodytemperature > species.heat_level_2)	// If you're already overheating to the point of melting, the heatsink starts causing problems.
+		adjustToxLoss(2 * (1 / efficiency_modified))
+
+/mob/living/carbon/human/proc/get_environment_temperature()
+
+	if(istype(loc, /obj/machinery/atmospherics/unary/cryo_cell))
+		return loc:air_contents.temperature
+
+	var/mob/living/exosuit/E = loc
+	if(istype(E))
+		return E.return_temperature()
+
+	var/turf/T = get_turf(src)
+
+	var/datum/gas_mixture/environment = T.return_air()
+
+	var/efficiency = 1
+	var/heatsink_efficiency = get_organ_efficiency(OP_HEATSINK)
+
+	if(environment)
+		efficiency = (1 - get_pressure_weakness(environment.return_pressure())) * (heatsink_efficiency / 100)
+
+	if(istype(T, /turf/space))
+		return species.heat_level_2 * efficiency
+
+	if(!environment)
+		return species.heat_level_2 * efficiency
+
+	return environment.temperature
+
 
 #undef BRUISED_2_EFFICIENCY
 #undef BROKEN_2_EFFICIENCY

@@ -224,6 +224,8 @@ var/global/list/damage_icon_parts = list()
 	var/hulk = (HULK in src.mutations)
 	var/skeleton = (SKELETON in src.mutations)
 
+	robobody_count = 0	//Kind of a bad way polaris does it, but to be honest i don't know where else to put it.
+
 	//Create a new, blank icon for our mob to use.
 	if(stand_icon)
 		qdel(stand_icon)
@@ -284,6 +286,9 @@ var/global/list/damage_icon_parts = list()
 					base_icon.Blend(temp2, ICON_UNDERLAY)
 				else
 					base_icon.Blend(temp, ICON_OVERLAY)
+
+				if((part.nature == MODIFICATION_SILICON || part.nature == MODIFICATION_LIFELIKE) && (part.organ_tag == BP_HEAD || part.organ_tag == BP_CHEST || part.organ_tag == BP_GROIN))
+					robobody_count ++
 
 			if(!skeleton)
 				if(husk)

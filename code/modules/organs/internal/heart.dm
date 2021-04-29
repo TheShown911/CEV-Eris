@@ -17,3 +17,18 @@
 		return FALSE
 
 	return owner.pulse > PULSE_NONE || BP_IS_ROBOTIC(src) || (owner.status_flags & FAKEDEATH)
+
+/obj/item/organ/internal/heart/machine //O_PUMP
+	name = "hydraulic hub"
+	icon_state = "pump-on"
+	dead_icon = "pump-off"
+	nature = MODIFICATION_SILICON
+
+/*
+/obj/item/organ/internal/stomach/machine/handle_organ_proc_special()
+	..()
+	if(owner && owner.stat != DEAD)
+		owner.bodytemperature += round(owner.robobody_count * 0.25, 0.1)
+
+	return
+*/
