@@ -279,7 +279,8 @@
 /mob/living/carbon/human/proc/get_environment_temperature()
 
 	if(istype(loc, /obj/machinery/atmospherics/unary/cryo_cell))
-		return loc:air_contents.temperature
+		var/obj/machinery/atmospherics/unary/cryo_cell/C = loc
+		return C.air_contents.temperature
 
 	var/mob/living/exosuit/E = loc
 	if(istype(E))

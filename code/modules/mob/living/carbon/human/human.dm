@@ -1209,6 +1209,8 @@ var/list/rank_prefix = list(\
 			if(mind)
 				C.install_default_modules_by_job(mind.assigned_job)
 				C.access.Add(mind.assigned_job.cruciform_access)
+		if(isSynthetic())
+			new /obj/item/organ/internal/heatsink(src)
 
 	else
 		var/organ_type
