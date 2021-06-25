@@ -18,11 +18,20 @@
 
 	return owner.pulse > PULSE_NONE || BP_IS_ROBOTIC(src) || (owner.status_flags & FAKEDEATH)
 
+
+/obj/item/organ/internal/heart/robotize()
+	..()
+	replace_self_with(/obj/item/organ/internal/heart/machine)
+
 /obj/item/organ/internal/heart/machine //O_PUMP
 	name = "hydraulic hub"
 	icon_state = "pump-on"
 	dead_icon = "pump-off"
 	nature = MODIFICATION_SILICON
+	specific_organ_size = 1
+	owner_verbs = list(
+		/mob/living/carbon/human/proc/self_diagnostics
+	)
 
 /*
 /obj/item/organ/internal/stomach/machine/handle_organ_proc_special()

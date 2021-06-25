@@ -54,6 +54,14 @@
 	for(var/proc_path in owner_verbs)
 		verbs |= proc_path
 
+/obj/item/organ/internal/proc/replace_self_with(replace_path)
+	var/obj/item/organ/external/tmp_parent = parent
+	qdel(src)
+	if(tmp_parent)
+		var/obj/item/organ/internal/O = new replace_path
+		O.replaced(tmp_parent)
+		tmp_parent = null
+
 /obj/item/organ/internal/proc/get_process_eficiency(process_define)
 	return organ_efficiency[process_define] - (organ_efficiency[process_define] * (damage / max_damage))
 
