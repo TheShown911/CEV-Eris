@@ -85,7 +85,6 @@
 			owner.key = brainmob.key
 
 /obj/item/organ/internal/brain/robotize()
-	..()
 	replace_self_with(/obj/item/organ/internal/mmi_holder/posibrain)
 
 /obj/item/organ/internal/brain/mmize()

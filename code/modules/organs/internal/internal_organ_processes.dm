@@ -252,7 +252,7 @@
 		carrion_last_hunger = world.time
 
 /mob/living/carbon/human/proc/heatsink_process()
-	bodytemperature += round(robobody_count * 0.75, 0.1)
+	bodytemperature += round(robobody_count * 0.85, 0.1)
 
 	var/thermostat = species.body_temperature
 	var/turf/T = get_turf(src)
@@ -263,10 +263,7 @@
 	var/env_temp = get_environment_temperature()
 	var/thermal_protection = get_heat_protection(env_temp)
 
-	if(thermal_protection < 1)
-		temp_adj = min(bodytemperature - max(thermostat, env_temp), robobody_count * 2)
-	else
-		temp_adj = min(bodytemperature - thermostat, robobody_count * 2)
+	temp_adj = min(bodytemperature - max(thermostat, env_temp), robobody_count * 2)
 
 	if(temp_adj < 0)
 		return

@@ -30,14 +30,13 @@
 	nature = MODIFICATION_SILICON
 	specific_organ_size = 1
 	owner_verbs = list(
-		/mob/living/carbon/human/proc/self_diagnostics
+		/obj/item/organ/internal/heart/machine/proc/owner_self_diagnostics
 	)
 
-/*
-/obj/item/organ/internal/stomach/machine/handle_organ_proc_special()
-	..()
-	if(owner && owner.stat != DEAD)
-		owner.bodytemperature += round(owner.robobody_count * 0.25, 0.1)
 
-	return
-*/
+/obj/item/organ/internal/heart/machine/proc/owner_self_diagnostics()	//A bit hacky, but it works
+	set name = "Self-Diagnostics"
+	set desc = "Run an internal self-diagnostic to check for damage."
+	set category = "IC"
+
+	owner.self_diagnostics()

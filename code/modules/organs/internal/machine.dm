@@ -125,7 +125,8 @@
 	if(owner && istype(owner,/mob/living/carbon/human/dummy/mannequin))
 		return
 	stored_mmi = new brain_type(src)
-	update_from_mmi()
+	spawn(0)
+		update_from_mmi()
 
 /obj/item/organ/internal/mmi_holder/proc/update_from_mmi()
 

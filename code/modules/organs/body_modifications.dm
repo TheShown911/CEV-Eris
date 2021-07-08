@@ -18,11 +18,13 @@ var/global/list/modifications_types = list(
 		for(var/part in BM.body_parts)
 			modifications_types[part] += "<div style = 'padding:2px' onclick=\"set('body_modification', '[BM.id]');\" class='block[class]'><b>[BM.name]</b><br>[BM.desc]</div>"
 
-/proc/get_default_modificaton(var/nature = MODIFICATION_ORGANIC)
+/proc/get_default_modificaton(var/nature = MODIFICATION_ORGANIC, var/organ_tag)
 	switch(nature)
 		if(MODIFICATION_ORGANIC)
 			return body_modifications["nothing"]
 		if(MODIFICATION_SILICON)
+			if(organ_tag == BP_BRAIN)
+				return body_modifications["posi"]
 			return body_modifications["robotize_organ"]
 		if(MODIFICATION_REMOVED)
 			return body_modifications["amputated"]
@@ -224,7 +226,7 @@ var/global/list/modifications_types = list(
 
 /datum/body_modification/organ/robotize_organ
 	name = "Robotic organ"
-	short_name = "prosthesis"
+	short_name = "Robotic organ"
 	id = "robotize_organ"
 	desc = "Robotic organ."
 	body_parts = list(OP_HEART, OP_LUNGS, OP_KIDNEY_LEFT, OP_KIDNEY_RIGHT, OP_STOMACH, OP_LIVER, OP_EYES)

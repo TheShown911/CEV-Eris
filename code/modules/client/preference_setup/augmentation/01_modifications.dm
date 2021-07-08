@@ -137,7 +137,7 @@
 		if(mod.is_allowed(child_organ, src))
 			modifications_data[child_organ] = mod
 		else
-			modifications_data[child_organ] = get_default_modificaton(mod.nature)
+			modifications_data[child_organ] = get_default_modificaton(mod.nature, child_organ)
 		check_child_modifications(child_organ)
 	return
 

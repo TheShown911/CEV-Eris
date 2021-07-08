@@ -237,9 +237,6 @@
 		output += "Internal Temperature: [convert_k2c(bodytemperature)] Degrees Celsius\n"
 
 		if(isSynthetic())
-			output += "Current Battery Charge: [nutrition]\n"
-
-		if(isSynthetic())
 			var/toxDam = getToxLoss()
 			if(toxDam)
 				output += "System Instability:" + SPAN_NOTICE("[toxDam > 25 ? "Severe" : "Moderate"].") + "Seek charging station for cleanup.\n"
@@ -253,11 +250,11 @@
 				else
 					output += "[EO.name] - <span style='color:green;'>OK</span>\n"
 
-		for(var/obj/item/organ/IO in internal_organs)
-			if(IO.nature >= MODIFICATION_ASSISTED)
-				if(IO.damage)
-					output += "[IO.name] - " + SPAN_NOTICE("[IO.damage > 10 ? "Heavy Damage" : "Light Damage"]") + "\n"
-				else
-					output += "[IO.name] - <span style='color:green;'>OK</span>\n"
+			for(var/obj/item/organ/IO in EO.internal_organs)
+				if(IO.nature >= MODIFICATION_ASSISTED)
+					if(IO.damage)
+						output += "[IO.name] - " + SPAN_NOTICE("[IO.damage > 10 ? "Heavy Damage" : "Light Damage"]") + "\n"
+					else
+						output += "[IO.name] - <span style='color:green;'>OK</span>\n"
 
 		to_chat(src,output)
