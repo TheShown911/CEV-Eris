@@ -105,53 +105,76 @@
 
 // Used for an MMI or posibrain being installed into a human.
 /obj/item/organ/internal/mmi_holder
-	name = "brain"
-	organ_tag = BP_BRAIN
-	parent_organ_base = BP_CHEST
+	name = "brain interface"
+	organ_efficiency = list(BP_BRAIN = 100)
+	parent_organ_base = BP_HEAD
 	vital = 1
+	var/brain_type = /obj/item/device/mmi
 	var/obj/item/device/mmi/stored_mmi
-
-/obj/item/organ/internal/mmi_holder/proc/update_from_mmi()
-	if(!stored_mmi)
-		return
-	name = stored_mmi.name
-	desc = stored_mmi.desc
-	icon = stored_mmi.icon
-	icon_state = stored_mmi.icon_state
-
-/obj/item/organ/internal/mmi_holder/removed(mob/living/user)
-	if(stored_mmi)
-		stored_mmi.forceMove(get_turf(src))
-	..()
-
-	qdel(src)
-
-/obj/item/organ/internal/mmi_holder/removed_mob(mob/living/user)
-	if(owner.mind && stored_mmi)
-		owner.mind.transfer_to(stored_mmi.brainmob)
-	..()
-
-/obj/item/organ/internal/mmi_holder/New()
-	..()
-	// This is very ghetto way of rebooting an IPC. TODO better way.
-	spawn(1)
-		if(owner && owner.stat == DEAD)
-			owner.stat = 0
-			owner.visible_message(SPAN_DANGER("\The [owner] twitches visibly!"))
-
-/obj/item/organ/internal/mmi_holder/posibrain
 	nature = MODIFICATION_SILICON
 
-/obj/item/organ/internal/mmi_holder/posibrain/New()
-	stored_mmi = new /obj/item/device/mmi/digital/posibrain(src)
+/obj/item/organ/internal/mmi_holder/Destroy()
+	if(stored_mmi && (stored_mmi.loc == src))
+		qdel(stored_mmi)
+		stored_mmi = null
+	return ..()
+
+/obj/item/organ/internal/mmi_holder/New(var/obj/item/organ/external/tmp_paren)
+	if(tmp_paren)
+		replaced(tmp_paren)
+	if(owner && istype(owner,/mob/living/carbon/human/dummy/mannequin))
+		return
+	stored_mmi = new brain_type(src)
+	spawn(0)
+		update_from_mmi()
+
+/obj/item/organ/internal/mmi_holder/proc/update_from_mmi()
+
+	if(!stored_mmi.brainmob)
+		stored_mmi.brainmob = new(stored_mmi)
+		stored_mmi.brainobj = new(stored_mmi)
+		stored_mmi.brainmob.container = stored_mmi
+		stored_mmi.brainmob.real_name = owner.real_name
+		stored_mmi.brainmob.name = stored_mmi.brainmob.real_name
+		stored_mmi.name = "[initial(stored_mmi.name)] ([owner.real_name])"
+
+	if(!owner) return
+
+	name = stored_mmi.name
+	desc = stored_mmi.desc
+	SetIcon(stored_mmi.icon)
+
+	stored_mmi.SetIconState("mmi_full")
+	SetIconState(stored_mmi.icon_state)
+
+	stored_mmi.brainmob.languages = owner.languages
+
+/obj/item/organ/internal/mmi_holder/removed(var/mob/living/user)
+
+	if(stored_mmi)
+		stored_mmi.loc = get_turf(src)
+		if(owner.mind)
+			owner.mind.transfer_to(stored_mmi.brainmob)
 	..()
-	spawn(30)
-		if(owner)
-			stored_mmi.name = "positronic brain ([owner.name])"
-			stored_mmi.brainmob.real_name = owner.name
-			stored_mmi.brainmob.name = stored_mmi.brainmob.real_name
-			stored_mmi.icon_state = "posibrain-occupied"
-			update_from_mmi()
-		else
-			stored_mmi.loc = get_turf(src)
-			qdel(src)
+
+	var/mob/living/holder_mob = loc
+	if(istype(holder_mob))
+		holder_mob.drop_from_inventory(src)
+
+	if(!(QDELETED(src)))
+		qdel(src)
+
+/obj/item/organ/internal/mmi_holder/emp_act(severity)
+	..()
+	owner?.adjustToxLoss(rand(6/severity, 12/severity))
+
+/obj/item/organ/internal/mmi_holder/posibrain
+	name = "positronic brain interface"
+	brain_type = /obj/item/device/mmi/digital/posibrain
+
+/obj/item/organ/internal/mmi_holder/posibrain/update_from_mmi()
+	..()
+	stored_mmi.SetIconState("posibrain-occupied")
+	SetIconState(stored_mmi.icon_state)
+
+	stored_mmi.brainmob.languages = owner.languages

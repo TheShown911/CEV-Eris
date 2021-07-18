@@ -16,3 +16,6 @@
 	desc = "Expand and contract"
 	nature = MODIFICATION_SILICON
 	matter = list(MATERIAL_STEEL = 1)
+	blood_req = 0
+	max_blood_storage = 0
+	nutriment_req = 0

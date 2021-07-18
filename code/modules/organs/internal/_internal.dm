@@ -55,6 +55,14 @@
 	for(var/proc_path in owner_verbs)
 		verbs |= proc_path
 
+/obj/item/organ/internal/proc/replace_self_with(replace_path)
+	var/obj/item/organ/external/tmp_parent = parent
+	qdel(src)
+	if(tmp_parent)
+		var/obj/item/organ/internal/O = new replace_path
+		O.replaced(tmp_parent)
+		tmp_parent = null
+
 /obj/item/organ/internal/proc/get_process_eficiency(process_define)
 	return organ_efficiency[process_define] - (organ_efficiency[process_define] * (damage / max_damage))
 
@@ -113,6 +121,13 @@
 	if(owner.chem_effects[CE_BLOODCLOT])
 		amount *= 1 + owner.chem_effects[CE_BLOODCLOT]
 	damage = between(0, damage - round(amount, 0.1), max_damage)
+
+/obj/item/organ/internal/proc/robotize()
+	nature = MODIFICATION_SILICON
+	max_blood_storage = 0
+
+/obj/item/organ/internal/proc/mmize()
+	return
 
 // Is body part open for most surgerical operations?
 /obj/item/organ/internal/is_open()

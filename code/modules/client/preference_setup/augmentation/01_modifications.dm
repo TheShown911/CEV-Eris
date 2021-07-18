@@ -134,13 +134,11 @@
 		return
 	var/datum/body_modification/mod = get_modification(organ)
 	for(var/child_organ in organ_data["children"])
-		var/datum/body_modification/child_mod = get_modification(child_organ)
-		if(child_mod.nature < mod.nature)
-			if(mod.is_allowed(child_organ, src))
-				modifications_data[child_organ] = mod
-			else
-				modifications_data[child_organ] = get_default_modificaton(mod.nature)
-			check_child_modifications(child_organ)
+		if(mod.is_allowed(child_organ, src))
+			modifications_data[child_organ] = mod
+		else
+			modifications_data[child_organ] = get_default_modificaton(mod.nature, child_organ)
+		check_child_modifications(child_organ)
 	return
 
 /datum/category_item/player_setup_item/augmentation/modifications/OnTopic(var/href, list/href_list, mob/user)

@@ -672,6 +672,11 @@
 	if (species.body_temperature == null)
 		return //this species doesn't have metabolic thermoregulation
 
+	if(stat != DEAD && robobody_count)
+		bodytemperature += round(robobody_count*1.15)
+		var/heatsink_efficiency = get_organ_efficiency(OP_HEATSINK)
+		bodytemperature += round(robobody_count * ((100 - heatsink_efficiency) / 100)) //No extra heat at base efficiency, extra cooling at 100+ efficiency
+
 	var/body_temperature_difference = species.body_temperature - bodytemperature
 
 	if (abs(body_temperature_difference) < 0.5)

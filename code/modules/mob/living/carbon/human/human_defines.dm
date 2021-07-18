@@ -68,6 +68,7 @@
 
 	var/gunshot_residue
 	var/pulling_punches // Are you trying not to hurt your opponent?
+	var/robobody_count = 0 // Counts torso, groin, and head, if they're robotic
 
 	mob_bump_flag = HUMAN
 	mob_push_flags = ~HEAVY

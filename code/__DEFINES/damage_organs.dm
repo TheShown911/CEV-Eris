@@ -51,6 +51,8 @@
 #define OP_MUSCLE        "muscle"
 #define OP_NERVE         "nerve"
 #define OP_BLOOD_VESSEL  "blood vessel"
+// Robotic-only organs
+#define OP_HEATSINK      "heatsink"
 
 // Extra organs
 #define OP_KIDNEY_LEFT    "left kidney"

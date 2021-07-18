@@ -18,11 +18,13 @@ var/global/list/modifications_types = list(
 		for(var/part in BM.body_parts)
 			modifications_types[part] += "<div style = 'padding:2px' onclick=\"set('body_modification', '[BM.id]');\" class='block[class]'><b>[BM.name]</b><br>[BM.desc]</div>"
 
-/proc/get_default_modificaton(var/nature = MODIFICATION_ORGANIC)
+/proc/get_default_modificaton(var/nature = MODIFICATION_ORGANIC, var/organ_tag)
 	switch(nature)
 		if(MODIFICATION_ORGANIC)
 			return body_modifications["nothing"]
 		if(MODIFICATION_SILICON)
+			if(organ_tag == BP_BRAIN)
+				return body_modifications["posi"]
 			return body_modifications["robotize_organ"]
 		if(MODIFICATION_REMOVED)
 			return body_modifications["amputated"]
@@ -43,6 +45,7 @@ var/global/list/modifications_types = list(
 	var/hascolor = FALSE
 	var/allow_nt = TRUE
 	var/list/department_specific = ALL_DEPARTMENTS
+	var/nature_locked = FALSE				 //Nature locked organs can only be used if the parent is the exact same nature as them
 
 /datum/body_modification/proc/get_mob_icon(organ, color="#ffffff", gender = MALE, species)	//Use in setup character only
 	return new/icon('icons/mob/human.dmi', "blank")
@@ -62,6 +65,10 @@ var/global/list/modifications_types = list(
 		if(parent.nature > nature)
 			to_chat(usr, "[name] can't be attached to [parent.name]")
 			return FALSE
+		if(nature_locked)
+			if(!(parent.nature == nature))
+				to_chat(usr, "[name] can't be attached to [parent.name]")
+				return FALSE
 
 	if(department_specific.len)
 		if(H && H.mind)
@@ -115,7 +122,7 @@ var/global/list/modifications_types = list(
 	short_name = "Removed"
 	id = "amputated"
 	desc = "Organ was removed."
-	body_parts = list(BP_L_ARM, BP_R_ARM, BP_L_LEG, BP_R_LEG, BP_HEAD, BP_GROIN, OP_HEART, OP_LUNGS, OP_KIDNEY_LEFT, OP_KIDNEY_RIGHT, OP_STOMACH, BP_BRAIN, OP_LIVER, OP_EYES)
+	body_parts = list(BP_L_ARM, BP_R_ARM, BP_L_LEG, BP_R_LEG, BP_HEAD, BP_GROIN, OP_LUNGS, OP_KIDNEY_LEFT, OP_KIDNEY_RIGHT, OP_STOMACH, OP_LIVER, OP_EYES)
 	replace_limb = 1
 	nature = MODIFICATION_REMOVED
 
@@ -219,19 +226,40 @@ var/global/list/modifications_types = list(
 
 /datum/body_modification/organ/robotize_organ
 	name = "Robotic organ"
-	short_name = "P: prosthesis"
+	short_name = "Robotic organ"
 	id = "robotize_organ"
 	desc = "Robotic organ."
-	body_parts = list(OP_HEART, OP_LUNGS, OP_KIDNEY_LEFT, OP_KIDNEY_RIGHT, OP_STOMACH, BP_BRAIN, OP_LIVER, OP_EYES)
+	body_parts = list(OP_HEART, OP_LUNGS, OP_KIDNEY_LEFT, OP_KIDNEY_RIGHT, OP_STOMACH, OP_LIVER, OP_EYES)
 	nature = MODIFICATION_SILICON
 	allow_nt = FALSE
 
 /datum/body_modification/organ/robotize_organ/create_organ(var/mob/living/carbon/holder, O, color)
-	var/obj/item/organ/I = ..(holder,O,color)
-	I.nature = MODIFICATION_SILICON
-	if(istype(I, /obj/item/organ/internal/eyes))
-		var/obj/item/organ/internal/eyes/E = I
-		E.robo_color = iscolor(color) ? color : "#FFFFFF"
+	var/obj/item/organ/internal/I = ..(holder,O,color)
+	I.robotize()
+	return I
+
+////Brain////
+/datum/body_modification/organ/robotize_organ/positronic
+	name = "Positronic brain"
+	short_name = "Positronic brain"
+	id = "posi"
+	desc = "Brain replaced with a positronic brain."
+	body_parts = list(BP_BRAIN)
+	nature_locked = TRUE
+
+/datum/body_modification/organ/mmi
+	name = "Man-Machine Interface"
+	short_name = "MMI"
+	id = "mmi"
+	desc = "Brain replaced with a Man-Machine Interface."
+	body_parts = list(BP_BRAIN)
+	nature = MODIFICATION_SILICON
+	allow_nt = FALSE
+	nature_locked = TRUE
+
+/datum/body_modification/organ/mmi/create_organ(var/mob/living/carbon/holder, O, color)
+	var/obj/item/organ/internal/I = ..(holder,O,color)
+	I.mmize()
 	return I
 
 ////Eyes////
